@@ -34,7 +34,7 @@ function App() {
       </div>
       {type === "flying" ? (
         <select value={num} onChange={(e) => setNum(e.target.value)}>
-          {[...Array(15).keys()].map((val) => (
+          {[...Array(20).keys()].map((val) => (
             <option key={val + 1} value={val + 1}>
               {val + 1}
             </option>
