@@ -3,7 +3,7 @@
 function App() {
   const [file, setFile] = useState(null);
   const [type, setType] = useState("flying");
-  const [num, setNum] = useState(1);
+  const [num, setNum] = useState("1"); // 文字列として初期化
   const [direction, setDirection] = useState("left");
 
   const handleFile = (e) => setFile(e.target.files[0]);
@@ -34,10 +34,13 @@ function App() {
       </div>
       {type === "flying" ? (
         <div>
-          <div>Debug: Flying mode - Options count: {[...Array(20).keys()].length}</div>
+          <div>Debug: Flying mode - Options count: {Array.from({ length: 20 }).length}</div>
+          <div>
+            Debug: Current num value: "{num}" (type: {typeof num})
+          </div>
           <select value={num} onChange={(e) => setNum(e.target.value)}>
             {Array.from({ length: 20 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
+              <option key={i + 1} value={String(i + 1)}>
                 {i + 1}
               </option>
             ))}
@@ -53,7 +56,7 @@ function App() {
           </label>
           <select value={num} onChange={(e) => setNum(e.target.value)}>
             {[...Array(5).keys()].map((val) => (
-              <option key={val + 1} value={val + 1}>
+              <option key={val + 1} value={String(val + 1)}>
                 {val + 1}
               </option>
             ))}
