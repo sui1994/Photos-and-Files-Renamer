@@ -26,12 +26,6 @@ function App() {
     setNum(1);
   };
 
-  // 飛行キャラクターの選択肢を明示的に配列で定義
-  const flyingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-
-  // 歩行キャラクターの選択肢
-  const walkingOptions = [1, 2, 3, 4, 5];
-
   return (
     <div style={{ padding: 30 }}>
       <h2>画像リネーム・ダウンロードツール</h2>
@@ -57,92 +51,28 @@ function App() {
             <strong>飛行キャラクター選択 (1-20)</strong>
           </div>
 
-          {/* 方法1: 通常のselect */}
-          <div style={{ marginBottom: 15 }}>
-            <label>ドロップダウン選択: </label>
-            <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16, minWidth: 150 }}>
-              {flyingOptions.map((option) => (
-                <option key={option} value={option}>
-                  キャラクター {option}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 方法2: ラジオボタン（1-10） */}
-          <div style={{ marginBottom: 15 }}>
-            <div>
-              <strong>ラジオボタン選択 (1-10):</strong>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {flyingOptions.slice(0, 10).map((option) => (
-                <label key={option} style={{ display: "flex", alignItems: "center" }}>
-                  <input type="radio" name="flying-radio-1-10" value={option} checked={num === option} onChange={() => setNum(option)} />
-                  <span style={{ marginLeft: 5 }}>{option}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 方法3: ラジオボタン（11-20） */}
-          <div style={{ marginBottom: 15 }}>
-            <div>
-              <strong>ラジオボタン選択 (11-20):</strong>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {flyingOptions.slice(10, 20).map((option) => (
-                <label key={option} style={{ display: "flex", alignItems: "center" }}>
-                  <input type="radio" name="flying-radio-11-20" value={option} checked={num === option} onChange={() => setNum(option)} />
-                  <span style={{ marginLeft: 5 }}>{option}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 方法4: 数値入力 */}
-          <div style={{ marginBottom: 15 }}>
-            <label>
-              <strong>直接入力: </strong>
-              <input
-                type="number"
-                min="1"
-                max="20"
-                value={num}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  if (val >= 1 && val <= 20) {
-                    setNum(val);
-                  }
-                }}
-                style={{ padding: 5, fontSize: 16, width: 80 }}
-              />
-            </label>
-          </div>
-
-          {/* 方法5: ボタン選択 */}
-          <div style={{ marginBottom: 15 }}>
-            <div>
-              <strong>ボタン選択:</strong>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 5, maxWidth: 500 }}>
-              {flyingOptions.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => setNum(option)}
-                  style={{
-                    padding: 8,
-                    backgroundColor: num === option ? "#007bff" : "#f8f9fa",
-                    color: num === option ? "white" : "black",
-                    border: "1px solid #ccc",
-                    borderRadius: 3,
-                    cursor: "pointer",
-                  }}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
+          <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16, minWidth: 150 }}>
+            <option value={1}>キャラクター 1</option>
+            <option value={2}>キャラクター 2</option>
+            <option value={3}>キャラクター 3</option>
+            <option value={4}>キャラクター 4</option>
+            <option value={5}>キャラクター 5</option>
+            <option value={6}>キャラクター 6</option>
+            <option value={7}>キャラクター 7</option>
+            <option value={8}>キャラクター 8</option>
+            <option value={9}>キャラクター 9</option>
+            <option value={10}>キャラクター 10</option>
+            <option value={11}>キャラクター 11</option>
+            <option value={12}>キャラクター 12</option>
+            <option value={13}>キャラクター 13</option>
+            <option value={14}>キャラクター 14</option>
+            <option value={15}>キャラクター 15</option>
+            <option value={16}>キャラクター 16</option>
+            <option value={17}>キャラクター 17</option>
+            <option value={18}>キャラクター 18</option>
+            <option value={19}>キャラクター 19</option>
+            <option value={20}>キャラクター 20</option>
+          </select>
         </div>
       ) : (
         <div style={{ marginBottom: 20 }}>
@@ -160,11 +90,11 @@ function App() {
             </label>
           </div>
           <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16 }}>
-            {walkingOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
           </select>
         </div>
       )}
