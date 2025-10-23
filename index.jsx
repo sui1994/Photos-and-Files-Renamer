@@ -38,13 +38,32 @@ function App() {
           <div>
             Debug: Current num value: "{num}" (type: {typeof num})
           </div>
-          <select value={num} onChange={(e) => setNum(e.target.value)}>
-            {Array.from({ length: 20 }, (_, i) => (
-              <option key={i + 1} value={String(i + 1)}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
+          <div>Debug: Generated options: {Array.from({ length: 20 }, (_, i) => i + 1).join(", ")}</div>
+
+          <div style={{ marginBottom: "10px" }}>
+            <label>ドロップダウン選択:</label>
+            <select value={num} onChange={(e) => setNum(e.target.value)}>
+              {Array.from({ length: 20 }, (_, i) => (
+                <option key={i + 1} value={String(i + 1)}>
+                  キャラクター {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label>リスト選択（全20個表示）:</label>
+            <select value={num} onChange={(e) => setNum(e.target.value)} size="20" style={{ height: "auto", minHeight: "300px", display: "block" }}>
+              {Array.from({ length: 20 }, (_, i) => {
+                console.log(`Creating option ${i + 1}`);
+                return (
+                  <option key={`list-${i + 1}`} value={String(i + 1)}>
+                    キャラクター {i + 1}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
       ) : (
         <>
