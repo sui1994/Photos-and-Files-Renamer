@@ -2,17 +2,338 @@
 <html lang="ja">
 
 <head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="画像リネーム・ダウンロードツール" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>画像リネーム・ダウンロードツール</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-right: 20px;
+    }
+
+    select,
+    input {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .filename {
+      background: #f0f0f0;
+      padding: 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      max-width: 500px;
+      margin-top: 10px;
+    }
+
+    .grid button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .selected {
+      background-color: #007bff !important;
+      color: white !important;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .method {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+
+    .method h4 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+  </style>
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
+  <h2>画像リネーム・ダウンロードツール</h2>
+  <p><strong>確実に1-20まで選択できる純粋HTML版</strong></p>
+
+  <div class="section">
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <div class="section">
+    <label>
+      <input type="radio" name="type" value="flying" checked onchange="handleTypeChange()"> flying-characters
+    </label>
+    <label>
+      <input type="radio" name="type" value="walking" onchange="handleTypeChange()"> walking-characters
+    </label>
+  </div>
+
+  <div id="flyingSection" class="section">
+    <div><strong>飛行キャラクター選択 (1-20)</strong></div>
+
+    <div class="method">
+      <h4>方法1: 数値入力（推奨）</h4>
+      <label>キャラクター番号: </label>
+      <input type="number" id="numInput" min="1" max="20" value="1" onchange="updateNum(this.value)">
+      <small> ← 16-20を直接入力できます</small>
+    </div>
+
+    <div class="method">
+      <h4>方法2: ボタン選択</h4>
+      <div class="grid" id="buttonGrid">
+        <!-- JavaScriptで生成 -->
+      </div>
+    </div>
+
+    <div class="method">
+      <h4>方法3: ラジオボタン選択</h4>
+      <div><strong>1-10:</strong></div>
+      <div class="radio-group" id="radio1to10">
+        <!-- JavaScriptで生成 -->
+      </div>
+      <div><strong>11-20:</strong></div>
+      <div class="radio-group" id="radio11to20">
+        <!-- JavaScriptで生成 -->
+      </div>
+    </div>
+
+    <div class="method">
+      <h4>方法4: セレクト（参考用）</h4>
+      <select id="flyingSelect" onchange="updateNum(this.value)">
+        <option value="1">キャラクター 1</option>
+        <option value="2">キャラクター 2</option>
+        <option value="3">キャラクター 3</option>
+        <option value="4">キャラクター 4</option>
+        <option value="5">キャラクター 5</option>
+        <option value="6">キャラクター 6</option>
+        <option value="7">キャラクター 7</option>
+        <option value="8">キャラクター 8</option>
+        <option value="9">キャラクター 9</option>
+        <option value="10">キャラクター 10</option>
+        <option value="11">キャラクター 11</option>
+        <option value="12">キャラクター 12</option>
+        <option value="13">キャラクター 13</option>
+        <option value="14">キャラクター 14</option>
+        <option value="15">キャラクター 15</option>
+        <option value="16">キャラクター 16</option>
+        <option value="17">キャラクター 17</option>
+        <option value="18">キャラクター 18</option>
+        <option value="19">キャラクター 19</option>
+        <option value="20">キャラクター 20</option>
+      </select>
+      <small> ← もし15までしか表示されない場合は上の方法を使用</small>
+    </div>
+  </div>
+
+  <div id="walkingSection" class="section" style="display: none;">
+    <div><strong>歩行キャラクター選択</strong></div>
+    <div style="margin: 10px 0;">
+      <label>
+        <input type="radio" name="direction" value="left" checked onchange="updateDirection()"> left
+      </label>
+      <label>
+        <input type="radio" name="direction" value="right" onchange="updateDirection()"> right
+      </label>
+    </div>
+    <select id="walkingSelect" onchange="updateNum(this.value)">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+  <div class="section" style="background: #e7f3ff; padding: 15px; border-radius: 8px;">
+    <strong>現在選択中: </strong>
+    <span id="currentNum" style="color: #007bff; font-weight: bold; font-size: 24px;">1</span>
+  </div>
+
+  <div class="section">
+    <strong>生成されるファイル名: </strong>
+    <span class="filename" id="filename">character1.png</span>
+  </div>
+
+  <div class="section">
+    <button id="downloadBtn" onclick="download()" disabled>リネームしてダウンロード</button>
+  </div>
+
+  <hr style="margin: 30px 0;">
+
+  <div>
+    <div style="margin-bottom: 10px;">
+      <strong>フォルダに配置:</strong> images/changeable/flying-characters or walking-characters
+    </div>
+    <div>
+      <strong>手順:</strong> ダウンロード後、上記フォルダにファイルを移動してください
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+    <h4>使用方法</h4>
+    <p><strong>推奨:</strong> 方法1（数値入力）を使用してください。16-20を直接入力できます。</p>
+    <p><strong>代替:</strong> 方法2（ボタン選択）または方法3（ラジオボタン11-20）でも確実に選択できます。</p>
+    <p>セレクトで問題がある場合でも、他の方法で必ず16-20を選択できます。</p>
+  </div>
+
+  <script>
+    let currentFile = null;
+    let currentType = 'flying';
+    let currentNum = 1;
+    let currentDirection = 'left';
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function () {
+      initializeButtons();
+      initializeRadios();
+      updateFilename();
+
+      document.getElementById('fileInput').addEventListener('change', function (e) {
+        currentFile = e.target.files[0];
+        document.getElementById('downloadBtn').disabled = !currentFile;
+      });
+    });
+
+    function initializeButtons() {
+      const buttonGrid = document.getElementById('buttonGrid');
+      for (let i = 1; i <= 20; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.onclick = () => updateNum(i);
+        button.id = `btn-${i}`;
+        buttonGrid.appendChild(button);
+      }
+      updateButtonStyles();
+    }
+
+    function initializeRadios() {
+      const radio1to10 = document.getElementById('radio1to10');
+      const radio11to20 = document.getElementById('radio11to20');
+
+      for (let i = 1; i <= 10; i++) {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="radio" name="flying-radio" value="${i}" onchange="updateNum(${i})"> ${i}`;
+        radio1to10.appendChild(label);
+      }
+
+      for (let i = 11; i <= 20; i++) {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="radio" name="flying-radio" value="${i}" onchange="updateNum(${i})"> ${i}`;
+        radio11to20.appendChild(label);
+      }
+    }
+
+    function handleTypeChange() {
+      const type = document.querySelector('input[name="type"]:checked').value;
+      currentType = type;
+      currentNum = 1;
+
+      if (type === 'flying') {
+        document.getElementById('flyingSection').style.display = 'block';
+        document.getElementById('walkingSection').style.display = 'none';
+      } else {
+        document.getElementById('flyingSection').style.display = 'none';
+        document.getElementById('walkingSection').style.display = 'block';
+      }
+
+      updateNum(1);
+    }
+
+    function updateNum(num) {
+      currentNum = parseInt(num);
+      document.getElementById('currentNum').textContent = currentNum;
+
+      // すべての選択方法を同期
+      if (currentType === 'flying') {
+        document.getElementById('flyingSelect').value = currentNum;
+        document.getElementById('numInput').value = currentNum;
+        updateButtonStyles();
+        updateRadioStyles();
+      } else {
+        document.getElementById('walkingSelect').value = currentNum;
+      }
+
+      updateFilename();
+    }
+
+    function updateDirection() {
+      currentDirection = document.querySelector('input[name="direction"]:checked').value;
+      updateFilename();
+    }
+
+    function updateButtonStyles() {
+      for (let i = 1; i <= 20; i++) {
+        const btn = document.getElementById(`btn-${i}`);
+        if (btn) {
+          btn.className = currentNum === i ? 'selected' : '';
+        }
+      }
+    }
+
+    function updateRadioStyles() {
+      const radios = document.querySelectorAll('input[name="flying-radio"]');
+      radios.forEach(radio => {
+        radio.checked = parseInt(radio.value) === currentNum;
+      });
+    }
+
+    function updateFilename() {
+      let filename;
+      if (currentType === 'flying') {
+        filename = `character${currentNum}.png`;
+      } else {
+        filename = `walking-${currentDirection}-${currentNum}.png`;
+      }
+      document.getElementById('filename').textContent = filename;
+    }
+
+    function download() {
+      if (!currentFile) return;
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(currentFile);
+      link.download = document.getElementById('filename').textContent;
+      link.click();
+    }
+  </script>
 </body>
 
 </html>
