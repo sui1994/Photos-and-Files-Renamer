@@ -33,13 +33,16 @@ function App() {
         </label>
       </div>
       {type === "flying" ? (
-        <select value={num} onChange={(e) => setNum(e.target.value)}>
-          {[...Array(20).keys()].map((val) => (
-            <option key={val + 1} value={val + 1}>
-              {val + 1}
-            </option>
-          ))}
-        </select>
+        <div>
+          <div>Debug: Flying mode - Options count: {[...Array(20).keys()].length}</div>
+          <select value={num} onChange={(e) => setNum(e.target.value)}>
+            {Array.from({ length: 20 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
+        </div>
       ) : (
         <>
           <label>
