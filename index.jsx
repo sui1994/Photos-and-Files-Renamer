@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div style={{ padding: 30 }}>
-      <h2>画像リネーム・ダウンロードツール</h2>
+      <h2>画像リネーム・ダウンロードツール v2.0</h2>
 
       <div style={{ marginBottom: 20 }}>
         <input type="file" accept="image/*" onChange={handleFile} />
