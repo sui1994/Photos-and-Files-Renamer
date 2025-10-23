@@ -1,10 +1,16 @@
-﻿import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [file, setFile] = useState(null);
   const [type, setType] = useState("flying");
   const [num, setNum] = useState("1"); // 文字列として初期化
   const [direction, setDirection] = useState("left");
+
+  // typeが変更されたときにnumをリセット
+  useEffect(() => {
+    console.log(`Type changed to: ${type}, resetting num to "1"`);
+    setNum("1");
+  }, [type]);
 
   const handleFile = (e) => setFile(e.target.files[0]);
   const getFileName = () => {
@@ -38,41 +44,58 @@ function App() {
           <div>
             Debug: Current num value: "{num}" (type: {typeof num})
           </div>
-          <div>Debug: Generated options: {Array.from({ length: 20 }, (_, i) => i + 1).join(", ")}</div>
+          <div>Debug: Generated options array: [{Array.from({ length: 20 }, (_, i) => i + 1).join(", ")}]</div>
+          <div>Debug: Array.from result length: {Array.from({ length: 20 }, (_, i) => i + 1).length}</div>
 
           <div style={{ marginBottom: "10px" }}>
-            <label>ドロップダウン選択:</label>
-            <select value={num} onChange={(e) => setNum(e.target.value)}>
-              {Array.from({ length: 20 }, (_, i) => (
-                <option key={i + 1} value={String(i + 1)}>
-                  キャラクター {i + 1}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label>リスト選択（全20個表示）:</label>
-            <select value={num} onChange={(e) => setNum(e.target.value)} size="20" style={{ height: "auto", minHeight: "300px", display: "block" }}>
+            <label>キャラクター番号選択:</label>
+            <select
+              value={num}
+              onChange={(e) => {
+                console.log(`Selected value: ${e.target.value}`);
+                setNum(e.target.value);
+              }}
+            >
               {Array.from({ length: 20 }, (_, i) => {
-                console.log(`Creating option ${i + 1}`);
+                const value = String(i + 1);
+                console.log(`Rendering option: ${value}`);
                 return (
-                  <option key={`list-${i + 1}`} value={String(i + 1)}>
+                  <option key={i + 1} value={value}>
                     キャラクター {i + 1}
                   </option>
                 );
               })}
             </select>
           </div>
+
+          <div>
+            <label>リスト表示（デバッグ用）:</label>
+            <select value={num} onChange={(e) => setNum(e.target.value)} size="20" style={{ height: "auto", minHeight: "300px", display: "block", width: "200px" }}>
+              {Array.from({ length: 20 }, (_, i) => (
+                <option key={`list-${i + 1}`} value={String(i + 1)}>
+                  {i + 1} - キャラクター{i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       ) : (
-        <>
-          <label>
-            <input type="radio" value="left" checked={direction === "left"} onChange={() => setDirection("left")} /> left
-          </label>
-          <label>
-            <input type="radio" value="right" checked={direction === "right"} onChange={() => setDirection("right")} /> right
-          </label>
+        <div>
+          <div>Debug: Walking mode - Options count: {[...Array(5).keys()].length}</div>
+          <div>
+            Debug: Current num value: "{num}" (type: {typeof num})
+          </div>
+          <div>Debug: Walking options: [{[...Array(5).keys()].map((val) => val + 1).join(", ")}]</div>
+
+          <div>
+            <label>
+              <input type="radio" value="left" checked={direction === "left"} onChange={() => setDirection("left")} /> left
+            </label>
+            <label>
+              <input type="radio" value="right" checked={direction === "right"} onChange={() => setDirection("right")} /> right
+            </label>
+          </div>
+
           <select value={num} onChange={(e) => setNum(e.target.value)}>
             {[...Array(5).keys()].map((val) => (
               <option key={val + 1} value={String(val + 1)}>
@@ -80,7 +103,7 @@ function App() {
               </option>
             ))}
           </select>
-        </>
+        </div>
       )}
       <br />
       <button onClick={download}>リネームしてダウンロード</button>
