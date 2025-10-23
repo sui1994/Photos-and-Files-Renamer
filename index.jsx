@@ -21,11 +21,16 @@ function App() {
     link.click();
   };
 
-  // タイプ変更時にnumをリセット
   const handleTypeChange = (newType) => {
     setType(newType);
-    setNum(1); // 常に1にリセット
+    setNum(1);
   };
+
+  // 飛行キャラクターの選択肢を明示的に配列で定義
+  const flyingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+  // 歩行キャラクターの選択肢
+  const walkingOptions = [1, 2, 3, 4, 5];
 
   return (
     <div style={{ padding: 30 }}>
@@ -51,13 +56,93 @@ function App() {
           <div style={{ marginBottom: 10 }}>
             <strong>飛行キャラクター選択 (1-20)</strong>
           </div>
-          <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16 }}>
-            {Array.from({ length: 20 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                キャラクター {i + 1}
-              </option>
-            ))}
-          </select>
+
+          {/* 方法1: 通常のselect */}
+          <div style={{ marginBottom: 15 }}>
+            <label>ドロップダウン選択: </label>
+            <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16, minWidth: 150 }}>
+              {flyingOptions.map((option) => (
+                <option key={option} value={option}>
+                  キャラクター {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 方法2: ラジオボタン（1-10） */}
+          <div style={{ marginBottom: 15 }}>
+            <div>
+              <strong>ラジオボタン選択 (1-10):</strong>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {flyingOptions.slice(0, 10).map((option) => (
+                <label key={option} style={{ display: "flex", alignItems: "center" }}>
+                  <input type="radio" name="flying-radio-1-10" value={option} checked={num === option} onChange={() => setNum(option)} />
+                  <span style={{ marginLeft: 5 }}>{option}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 方法3: ラジオボタン（11-20） */}
+          <div style={{ marginBottom: 15 }}>
+            <div>
+              <strong>ラジオボタン選択 (11-20):</strong>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {flyingOptions.slice(10, 20).map((option) => (
+                <label key={option} style={{ display: "flex", alignItems: "center" }}>
+                  <input type="radio" name="flying-radio-11-20" value={option} checked={num === option} onChange={() => setNum(option)} />
+                  <span style={{ marginLeft: 5 }}>{option}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 方法4: 数値入力 */}
+          <div style={{ marginBottom: 15 }}>
+            <label>
+              <strong>直接入力: </strong>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={num}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (val >= 1 && val <= 20) {
+                    setNum(val);
+                  }
+                }}
+                style={{ padding: 5, fontSize: 16, width: 80 }}
+              />
+            </label>
+          </div>
+
+          {/* 方法5: ボタン選択 */}
+          <div style={{ marginBottom: 15 }}>
+            <div>
+              <strong>ボタン選択:</strong>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 5, maxWidth: 500 }}>
+              {flyingOptions.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setNum(option)}
+                  style={{
+                    padding: 8,
+                    backgroundColor: num === option ? "#007bff" : "#f8f9fa",
+                    color: num === option ? "white" : "black",
+                    border: "1px solid #ccc",
+                    borderRadius: 3,
+                    cursor: "pointer",
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <div style={{ marginBottom: 20 }}>
@@ -75,9 +160,9 @@ function App() {
             </label>
           </div>
           <select value={num} onChange={(e) => setNum(parseInt(e.target.value))} style={{ padding: 5, fontSize: 16 }}>
-            {Array.from({ length: 5 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
+            {walkingOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
               </option>
             ))}
           </select>
@@ -114,17 +199,6 @@ function App() {
         <div>
           <strong>手順:</strong> ダウンロード後、上記フォルダにファイルを移動してください
         </div>
-      </div>
-
-      {/* デバッグ情報 */}
-      <div style={{ marginTop: 30, padding: 15, background: "#f8f9fa", borderRadius: 5 }}>
-        <h4>デバッグ情報</h4>
-        <div>タイプ: {type}</div>
-        <div>番号: {num}</div>
-        <div>方向: {direction}</div>
-        <div>ファイル選択済み: {file ? "はい" : "いいえ"}</div>
-        {type === "flying" && <div>飛行キャラクター選択肢数: {Array.from({ length: 20 }).length}</div>}
-        {type === "walking" && <div>歩行キャラクター選択肢数: {Array.from({ length: 5 }).length}</div>}
       </div>
     </div>
   );
