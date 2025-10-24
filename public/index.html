@@ -41,10 +41,41 @@
       font-size: 16px;
       border: 1px solid #ddd;
       border-radius: 5px;
+      width: 100%;
+      max-width: 300px;
     }
 
     select {
       min-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      select,
+      input[type="file"] {
+        max-width: 100%;
+      }
+
+      .radio-group {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      label {
+        margin-right: 0;
+        margin-bottom: 5px;
+      }
+
+      .current-selection .number {
+        font-size: 24px;
+      }
     }
 
     button {
@@ -76,38 +107,7 @@
       border: 1px solid #dee2e6;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 8px;
-      max-width: 600px;
-      margin-top: 15px;
-    }
 
-    .grid button {
-      padding: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      min-height: 40px;
-    }
-
-    .selected {
-      background-color: #007bff !important;
-      color: white !important;
-    }
-
-    .method {
-      border: 1px solid #e9ecef;
-      padding: 20px;
-      margin: 15px 0;
-      border-radius: 8px;
-      background: #f8f9fa;
-    }
-
-    .method h4 {
-      margin: 0 0 15px 0;
-      color: #495057;
-    }
 
     .current-selection {
       background: linear-gradient(135deg, #007bff, #0056b3);
@@ -152,16 +152,19 @@
     <div class="section">
       <label for="fileInput"><strong>画像ファイルを選択:</strong></label><br>
       <input type="file" id="fileInput" accept="image/*" style="margin-top: 8px;">
+      <div id="fileStatus" style="margin-top: 10px; color: #666; font-size: 14px;">
+        ファイルが選択されていません
+      </div>
     </div>
 
     <div class="section">
       <strong>キャラクタータイプ:</strong><br>
       <div style="margin-top: 8px;">
-        <label>
-          <input type="radio" name="type" value="flying" checked onchange="handleTypeChange()">
-          🎃 flying-characters
+        <label style="display: block; margin-bottom: 8px;"></label>
+        <input type="radio" name="type" value="flying" checked onchange="handleTypeChange()">
+        🎃 flying-characters
         </label>
-        <label>
+        <label style="display: block;">
           <input type="radio" name="type" value="walking" onchange="handleTypeChange()">
           🚶 walking-characters
         </label>
@@ -169,10 +172,9 @@
     </div>
 
     <div id="flyingSection" class="section">
-      <strong>飛行キャラクター選択 (1-20)</strong>
-
-      <div class="method">
-        <h4>📋 セレクトボックス</h4>
+      <strong>キャラクター選択:</strong><br>
+      <span style="color: #666; font-size: 14px;">飛行キャラクター (1-20)</span>
+      <div style="margin-top: 10px;">
         <select id="flyingSelect" onchange="updateNum(this.value)">
           <option value="1">キャラクター 1</option>
           <option value="2">キャラクター 2</option>
@@ -196,39 +198,36 @@
           <option value="20">キャラクター 20</option>
         </select>
       </div>
-
-      <div class="method">
-        <h4>🔢 ボタン選択</h4>
-        <div class="grid" id="buttonGrid">
-          <!-- JavaScriptで生成 -->
-        </div>
-      </div>
     </div>
 
     <div id="walkingSection" class="section" style="display: none;">
-      <strong>歩行キャラクター選択</strong>
+      <strong>キャラクター選択:</strong><br>
+      <span style="color: #666; font-size: 14px;">歩行キャラクター</span>
 
       <div style="margin: 15px 0;">
         <strong>方向:</strong><br>
         <div class="radio-group">
-          <label>
+          <label style="display: block; margin-bottom: 8px;">
             <input type="radio" name="direction" value="left" checked onchange="updateDirection()">
             ⬅️ left
           </label>
-          <label>
+          <label style="display: block;">
             <input type="radio" name="direction" value="right" onchange="updateDirection()">
             ➡️ right
           </label>
         </div>
       </div>
 
-      <select id="walkingSelect" onchange="updateNum(this.value)">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+      <div style="margin-top: 10px;">
+        <strong>番号:</strong><br>
+        <select id="walkingSelect" onchange="updateNum(this.value)" style="margin-top: 5px;">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
     </div>
 
     <div class="current-selection">
@@ -263,26 +262,23 @@
 
     // 初期化
     document.addEventListener('DOMContentLoaded', function () {
-      initializeButtons();
       updateFilename();
 
       document.getElementById('fileInput').addEventListener('change', function (e) {
         currentFile = e.target.files[0];
-        document.getElementById('downloadBtn').disabled = !currentFile;
+        const fileStatus = document.getElementById('fileStatus');
+
+        if (currentFile) {
+          fileStatus.textContent = `選択されたファイル: ${currentFile.name}`;
+          fileStatus.style.color = '#007bff';
+          document.getElementById('downloadBtn').disabled = false;
+        } else {
+          fileStatus.textContent = 'ファイルが選択されていません';
+          fileStatus.style.color = '#666';
+          document.getElementById('downloadBtn').disabled = true;
+        }
       });
     });
-
-    function initializeButtons() {
-      const buttonGrid = document.getElementById('buttonGrid');
-      for (let i = 1; i <= 20; i++) {
-        const button = document.createElement('button');
-        button.textContent = i;
-        button.onclick = () => updateNum(i);
-        button.id = `btn-${i}`;
-        buttonGrid.appendChild(button);
-      }
-      updateButtonStyles();
-    }
 
     function handleTypeChange() {
       const type = document.querySelector('input[name="type"]:checked').value;
@@ -304,10 +300,9 @@
       currentNum = parseInt(num);
       document.getElementById('currentNum').textContent = currentNum;
 
-      // すべての選択方法を同期
+      // セレクトボックスを同期
       if (currentType === 'flying') {
         document.getElementById('flyingSelect').value = currentNum;
-        updateButtonStyles();
       } else {
         document.getElementById('walkingSelect').value = currentNum;
       }
@@ -318,15 +313,6 @@
     function updateDirection() {
       currentDirection = document.querySelector('input[name="direction"]:checked').value;
       updateFilename();
-    }
-
-    function updateButtonStyles() {
-      for (let i = 1; i <= 20; i++) {
-        const btn = document.getElementById(`btn-${i}`);
-        if (btn) {
-          btn.className = currentNum === i ? 'selected' : '';
-        }
-      }
     }
 
     function updateFilename() {
