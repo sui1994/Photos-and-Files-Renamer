@@ -142,6 +142,72 @@
       color: #0c5460;
       margin: 0 0 10px 0;
     }
+
+    .file-mapping-item {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .file-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .file-name {
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .file-size {
+      color: #6c757d;
+      font-size: 12px;
+    }
+
+    .name-selection {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .name-selection label {
+      font-weight: normal;
+      margin-right: 0;
+    }
+
+    .name-selection select {
+      max-width: 100%;
+    }
+
+    .preview-filename {
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .file-mapping-item {
+        padding: 12px;
+      }
+
+      .file-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+    }
   </style>
 </head>
 
@@ -151,187 +217,211 @@
 
     <div class="section">
       <label for="fileInput"><strong>画像ファイルを選択:</strong></label><br>
-      <input type="file" id="fileInput" accept="image/*" style="margin-top: 8px;">
+      <input type="file" id="fileInput" accept="image/*" multiple style="margin-top: 8px;">
       <div id="fileStatus" style="margin-top: 10px; color: #666; font-size: 14px;">
         ファイルが選択されていません
       </div>
     </div>
 
-    <div class="section">
-      <strong>キャラクタータイプ:</strong><br>
-      <div style="margin-top: 8px;">
-        <label style="display: block; margin-bottom: 8px;"></label>
-        <input type="radio" name="type" value="flying" checked onchange="handleTypeChange()">
-        🎃 flying-characters
-        </label>
-        <label style="display: block;">
-          <input type="radio" name="type" value="walking" onchange="handleTypeChange()">
-          🚶 walking-characters
-        </label>
+    <div id="fileMapping" class="section" style="display: none;">
+      <strong>ファイルと名前の対応:</strong><br>
+      <span style="color: #666; font-size: 14px;">各ファイルに個別の名前を選択してください</span>
+      <div id="fileMappingList" style="margin-top: 15px;">
+        <!-- JavaScriptで動的生成 -->
       </div>
-    </div>
-
-    <div id="flyingSection" class="section">
-      <strong>キャラクター選択:</strong><br>
-      <span style="color: #666; font-size: 14px;">飛行キャラクター (1-20)</span>
-      <div style="margin-top: 10px;">
-        <select id="flyingSelect" onchange="updateNum(this.value)">
-          <option value="1">キャラクター 1</option>
-          <option value="2">キャラクター 2</option>
-          <option value="3">キャラクター 3</option>
-          <option value="4">キャラクター 4</option>
-          <option value="5">キャラクター 5</option>
-          <option value="6">キャラクター 6</option>
-          <option value="7">キャラクター 7</option>
-          <option value="8">キャラクター 8</option>
-          <option value="9">キャラクター 9</option>
-          <option value="10">キャラクター 10</option>
-          <option value="11">キャラクター 11</option>
-          <option value="12">キャラクター 12</option>
-          <option value="13">キャラクター 13</option>
-          <option value="14">キャラクター 14</option>
-          <option value="15">キャラクター 15</option>
-          <option value="16">キャラクター 16</option>
-          <option value="17">キャラクター 17</option>
-          <option value="18">キャラクター 18</option>
-          <option value="19">キャラクター 19</option>
-          <option value="20">キャラクター 20</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="walkingSection" class="section" style="display: none;">
-      <strong>キャラクター選択:</strong><br>
-      <span style="color: #666; font-size: 14px;">歩行キャラクター</span>
-
-      <div style="margin: 15px 0;">
-        <strong>方向:</strong><br>
-        <div class="radio-group">
-          <label style="display: block; margin-bottom: 8px;">
-            <input type="radio" name="direction" value="left" checked onchange="updateDirection()">
-            ⬅️ left
-          </label>
-          <label style="display: block;">
-            <input type="radio" name="direction" value="right" onchange="updateDirection()">
-            ➡️ right
-          </label>
-        </div>
-      </div>
-
-      <div style="margin-top: 10px;">
-        <strong>番号:</strong><br>
-        <select id="walkingSelect" onchange="updateNum(this.value)" style="margin-top: 5px;">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="current-selection">
-      <strong>現在選択中:</strong>
-      <span class="number" id="currentNum">1</span>
-      <strong>番</strong>
     </div>
 
     <div class="section">
-      <strong>生成されるファイル名:</strong><br>
-      <div class="filename" id="filename" style="margin-top: 8px;">character1.png</div>
-    </div>
-
-    <div class="section">
-      <button id="downloadBtn" onclick="download()" disabled>
-        💾 リネームしてダウンロード
+      <button id="downloadBtn" onclick="downloadAll()" disabled>
+        💾 すべてリネームしてダウンロード
       </button>
     </div>
 
     <div class="instructions">
       <h4>📁 使用方法</h4>
-      <div><strong>配置先:</strong> images/changeable/flying-characters または walking-characters</div>
-      <div><strong>手順:</strong> ダウンロード後、上記フォルダにファイルを移動してください</div>
+      <div><strong>1. 複数ファイル選択:</strong> Ctrl+クリック（Windows）またはCmd+クリック（Mac）で複数選択可能</div>
+      <div><strong>2. 個別名前選択:</strong> 各ファイルに対して個別にキャラクター名を選択</div>
+      <div><strong>3. 配置先:</strong> images/changeable/flying-characters または walking-characters</div>
+      <div><strong>4. 手順:</strong> ダウンロード後、上記フォルダにファイルを移動してください</div>
     </div>
   </div>
 
   <script>
-    let currentFile = null;
-    let currentType = 'flying';
-    let currentNum = 1;
-    let currentDirection = 'left';
+    let selectedFiles = [];
+    let fileMappings = new Map(); // ファイルと選択された名前のマッピング
+
+    // 飛行キャラクターの選択肢
+    const flyingOptions = Array.from({ length: 20 }, (_, i) => ({
+      value: `character${i + 1}`,
+      label: `キャラクター ${i + 1}`,
+      filename: `character${i + 1}.png`
+    }));
+
+    // 歩行キャラクターの選択肢
+    const walkingOptions = [];
+    ['left', 'right'].forEach(direction => {
+      for (let i = 1; i <= 5; i++) {
+        walkingOptions.push({
+          value: `walking-${direction}-${i}`,
+          label: `${direction === 'left' ? '左' : '右'}歩行 ${i}`,
+          filename: `walking-${direction}-${i}.png`
+        });
+      }
+    });
 
     // 初期化
     document.addEventListener('DOMContentLoaded', function () {
-      updateFilename();
-
       document.getElementById('fileInput').addEventListener('change', function (e) {
-        currentFile = e.target.files[0];
-        const fileStatus = document.getElementById('fileStatus');
-
-        if (currentFile) {
-          fileStatus.textContent = `選択されたファイル: ${currentFile.name}`;
-          fileStatus.style.color = '#007bff';
-          document.getElementById('downloadBtn').disabled = false;
-        } else {
-          fileStatus.textContent = 'ファイルが選択されていません';
-          fileStatus.style.color = '#666';
-          document.getElementById('downloadBtn').disabled = true;
-        }
+        selectedFiles = Array.from(e.target.files);
+        updateFileStatus();
+        generateFileMappings();
       });
     });
 
-    function handleTypeChange() {
-      const type = document.querySelector('input[name="type"]:checked').value;
-      currentType = type;
-      currentNum = 1;
+    function updateFileStatus() {
+      const fileStatus = document.getElementById('fileStatus');
+      const fileMapping = document.getElementById('fileMapping');
 
-      if (type === 'flying') {
-        document.getElementById('flyingSection').style.display = 'block';
-        document.getElementById('walkingSection').style.display = 'none';
+      if (selectedFiles.length > 0) {
+        fileStatus.textContent = `${selectedFiles.length}個のファイルが選択されました`;
+        fileStatus.style.color = '#007bff';
+        fileMapping.style.display = 'block';
+        document.getElementById('downloadBtn').disabled = false;
       } else {
-        document.getElementById('flyingSection').style.display = 'none';
-        document.getElementById('walkingSection').style.display = 'block';
+        fileStatus.textContent = 'ファイルが選択されていません';
+        fileStatus.style.color = '#666';
+        fileMapping.style.display = 'none';
+        document.getElementById('downloadBtn').disabled = true;
+      }
+    }
+
+    function generateFileMappings() {
+      const fileMappingList = document.getElementById('fileMappingList');
+      fileMappingList.innerHTML = '';
+      fileMappings.clear();
+
+      selectedFiles.forEach((file, index) => {
+        const mappingItem = document.createElement('div');
+        mappingItem.className = 'file-mapping-item';
+        mappingItem.id = `mapping-${index}`;
+
+        mappingItem.innerHTML = `
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${(file.size / 1024).toFixed(1)}KB</div>
+          </div>
+          
+          <div class="name-selection">
+            <label><strong>キャラクタータイプ:</strong></label>
+            <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+              <label>
+                <input type="radio" name="type-${index}" value="flying" checked onchange="updateCharacterOptions(${index})">
+                🎃 flying-characters
+              </label>
+              <label>
+                <input type="radio" name="type-${index}" value="walking" onchange="updateCharacterOptions(${index})">
+                🚶 walking-characters
+              </label>
+            </div>
+            
+            <label><strong>キャラクター名:</strong></label>
+            <select id="character-select-${index}" onchange="updatePreview(${index})">
+              <!-- JavaScriptで動的生成 -->
+            </select>
+          </div>
+          
+          <div class="preview-filename" id="preview-${index}">
+            character1.png
+          </div>
+        `;
+
+        fileMappingList.appendChild(mappingItem);
+
+        // 初期設定
+        updateCharacterOptions(index);
+
+        // 初期マッピングを設定
+        fileMappings.set(index, {
+          file: file,
+          type: 'flying',
+          character: 'character1',
+          filename: 'character1.png'
+        });
+      });
+    }
+
+    function updateCharacterOptions(fileIndex) {
+      const typeRadios = document.querySelectorAll(`input[name="type-${fileIndex}"]`);
+      const selectedType = Array.from(typeRadios).find(radio => radio.checked).value;
+      const characterSelect = document.getElementById(`character-select-${fileIndex}`);
+
+      // セレクトボックスをクリア
+      characterSelect.innerHTML = '';
+
+      // 選択されたタイプに応じてオプションを追加
+      const options = selectedType === 'flying' ? flyingOptions : walkingOptions;
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.textContent = option.label;
+        optionElement.dataset.filename = option.filename;
+        characterSelect.appendChild(optionElement);
+      });
+
+      // プレビューを更新
+      updatePreview(fileIndex);
+    }
+
+    function updatePreview(fileIndex) {
+      const typeRadios = document.querySelectorAll(`input[name="type-${fileIndex}"]`);
+      const selectedType = Array.from(typeRadios).find(radio => radio.checked).value;
+      const characterSelect = document.getElementById(`character-select-${fileIndex}`);
+      const selectedOption = characterSelect.options[characterSelect.selectedIndex];
+      const filename = selectedOption.dataset.filename;
+
+      // プレビューを更新
+      const preview = document.getElementById(`preview-${fileIndex}`);
+      preview.textContent = filename;
+
+      // マッピングを更新
+      fileMappings.set(fileIndex, {
+        file: selectedFiles[fileIndex],
+        type: selectedType,
+        character: selectedOption.value,
+        filename: filename
+      });
+    }
+
+    function downloadAll() {
+      if (selectedFiles.length === 0) return;
+
+      // 使用されているファイル名をチェック
+      const usedFilenames = new Set();
+      const duplicates = [];
+
+      fileMappings.forEach((mapping, index) => {
+        if (usedFilenames.has(mapping.filename)) {
+          duplicates.push(mapping.filename);
+        } else {
+          usedFilenames.add(mapping.filename);
+        }
+      });
+
+      // 重複チェック
+      if (duplicates.length > 0) {
+        alert(`重複するファイル名があります: ${duplicates.join(', ')}\n\n異なるキャラクター名を選択してください。`);
+        return;
       }
 
-      updateNum(1);
-    }
-
-    function updateNum(num) {
-      currentNum = parseInt(num);
-      document.getElementById('currentNum').textContent = currentNum;
-
-      // セレクトボックスを同期
-      if (currentType === 'flying') {
-        document.getElementById('flyingSelect').value = currentNum;
-      } else {
-        document.getElementById('walkingSelect').value = currentNum;
-      }
-
-      updateFilename();
-    }
-
-    function updateDirection() {
-      currentDirection = document.querySelector('input[name="direction"]:checked').value;
-      updateFilename();
-    }
-
-    function updateFilename() {
-      let filename;
-      if (currentType === 'flying') {
-        filename = `character${currentNum}.png`;
-      } else {
-        filename = `walking-${currentDirection}-${currentNum}.png`;
-      }
-      document.getElementById('filename').textContent = filename;
-    }
-
-    function download() {
-      if (!currentFile) return;
-
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(currentFile);
-      link.download = document.getElementById('filename').textContent;
-      link.click();
+      // ダウンロード実行
+      fileMappings.forEach((mapping, index) => {
+        setTimeout(() => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(mapping.file);
+          link.download = mapping.filename;
+          link.click();
+        }, index * 100); // 100ms間隔でダウンロード
+      });
     }
   </script>
 </body>
